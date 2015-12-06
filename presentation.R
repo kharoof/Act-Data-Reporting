@@ -29,21 +29,19 @@ X <- as.data.frame(RAA)
 X$Year <- as.factor(X$origin)
 p_data <- ggplot(X, aes(dev, value, color=Year))
 ##The default plot theme
-#cc <- scales::seq_gradient_pal("white", "purple", "Lab")(seq(0,1,length.out=10))
-p <- p_data +geom_line(linetype="dashed")+geom_point()+ #scale_colour_manual(values=cc)+
-    ggtitle("Dataset Development") +
-       theme_hc() +
-        theme(legend.position="right",
-              axis.text=element_text(size=9),
-              legend.background = element_rect(fill = "white"),
-              legend.text=element_text(color="black"),
-              legend.title=element_text(color="black"),
-              legend.key=element_rect(size=5)) +
-            xlab("Accident Period") + ylab("Incurred Amount")+
-                scale_y_continuous(labels = comma) +
-                    scale_x_discrete() #+
-#                        scale_linetype_manual(breaks=c("1987","1986"), values=c(1,1))
-# check my layout names:
+##cc <- scales::seq_gradient_pal("white", "purple", "Lab")(seq(0,1,length.out=10))
+X.Recent <- X[X$Year%in%c(1986:1990),]
+p <- p_data +
+    ##Add dashed lines with an alpha for old years
+    geom_line(linetype="dashed", alpha=0.4)+geom_point(alpha=0.4)+
+        ##Add normal lines for recent years
+        geom_line(data=X.Recent)+geom_point(data=X.Recent) +
+            ##Add custom colours
+            ##scale_colour_manual(values=cc)+
+            theme_hc() + theme(legend.position="right",axis.text=element_text(size=9)) +scale_y_continuous(labels = comma) + scale_x_discrete() +
+                ggtitle("Dataset Development") + xlab("Accident Period") + ylab("Incurred Amount")
+                        
+## check my layout names:
 slide.layouts(mydoc)
 
 mydoc = addSlide( mydoc, "Two Content" )
